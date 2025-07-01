@@ -1,0 +1,58 @@
+import tkinter as tk
+import random
+
+# Initialize scores
+user_score = 0
+computer_score = 0
+
+# Game logic
+def play(user_choice):
+    global user_score, computer_score
+
+    options = ['Rock', 'Paper', 'Scissors']
+    computer_choice = random.choice(options)
+
+    result = ""
+    if user_choice == computer_choice:
+        result = "It's a Tie!"
+    elif (user_choice == 'Rock' and computer_choice == 'Scissors') or \
+         (user_choice == 'Paper' and computer_choice == 'Rock') or \
+         (user_choice == 'Scissors' and computer_choice == 'Paper'):
+        result = "You Win!"
+        user_score += 1
+    else:
+        result = "Computer Wins!"
+        computer_score += 1
+
+    result_label.config(text=f"Your Choice: {user_choice}\nComputer's Choice: {computer_choice}\n{result}")
+    score_label.config(text=f"Score - You: {user_score} | Computer: {computer_score}")
+
+# Reset game
+def reset_game():
+    global user_score, computer_score
+    user_score = 0
+    computer_score = 0
+    result_label.config(text="Let's Play!")
+    score_label.config(text="Score - You: 0 | Computer: 0")
+
+# GUI setup
+root = tk.Tk()
+root.title("Rock Paper Scissors")
+
+tk.Label(root, text="Choose:", font=("Helvetica", 16)).pack()
+
+choices_frame = tk.Frame(root)
+choices_frame.pack()
+
+for choice in ['Rock', 'Paper', 'Scissors']:
+    tk.Button(choices_frame, text=choice, width=10, command=lambda c=choice: play(c)).pack(side='left', padx=10)
+
+result_label = tk.Label(root, text="Let's Play!", font=("Helvetica", 14), pady=20)
+result_label.pack()
+
+score_label = tk.Label(root, text="Score - You: 0 | Computer: 0", font=("Helvetica", 12))
+score_label.pack()
+
+tk.Button(root, text="Play Again", command=reset_game, bg='lightblue').pack(pady=10)
+
+root.mainloop()
