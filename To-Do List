@@ -1,0 +1,64 @@
+import tkinter as tk
+from tkinter import messagebox, simpledialog
+
+# Main Application Class
+class ToDoApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("To-Do List App")
+
+        self.tasks = []
+
+        # Entry box for new tasks
+        self.task_entry = tk.Entry(root, width=40)
+        self.task_entry.pack(pady=10)
+
+        # Buttons
+        self.add_btn = tk.Button(root, text="Add Task", width=20, command=self.add_task)
+        self.update_btn = tk.Button(root, text="Update Selected Task", width=20, command=self.update_task)
+        self.delete_btn = tk.Button(root, text="Delete Selected Task", width=20, command=self.delete_task)
+        self.add_btn.pack(pady=5)
+        self.update_btn.pack(pady=5)
+        self.delete_btn.pack(pady=5)
+
+        # Listbox to show tasks
+        self.task_listbox = tk.Listbox(root, width=50, height=10)
+        self.task_listbox.pack(pady=10)
+
+    def add_task(self):
+        task = self.task_entry.get().strip()
+        if task:
+            self.tasks.append(task)
+            self.update_task_listbox()
+            self.task_entry.delete(0, tk.END)
+        else:
+            messagebox.showwarning("Input Error", "Please enter a task.")
+
+    def update_task(self):
+        selected_index = self.task_listbox.curselection()
+        if selected_index:
+            new_task = simpledialog.askstring("Update Task", "Enter updated task:")
+            if new_task:
+                self.tasks[selected_index[0]] = new_task.strip()
+                self.update_task_listbox()
+        else:
+            messagebox.showwarning("Selection Error", "Please select a task to update.")
+
+    def delete_task(self):
+        selected_index = self.task_listbox.curselection()
+        if selected_index:
+            del self.tasks[selected_index[0]]
+            self.update_task_listbox()
+        else:
+            messagebox.showwarning("Selection Error", "Please select a task to delete.")
+
+    def update_task_listbox(self):
+        self.task_listbox.delete(0, tk.END)
+        for task in self.tasks:
+            self.task_listbox.insert(tk.END, task)
+
+# Run the application
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = ToDoApp(root)
+    root.mainloop()
