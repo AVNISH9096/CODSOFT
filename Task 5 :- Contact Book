@@ -1,0 +1,81 @@
+import tkinter as tk
+from tkinter import messagebox
+
+contacts = {}
+
+def add_contact():
+    name = entry_name.get()
+    phone = entry_phone.get()
+    email = entry_email.get()
+    if name and phone:
+        contacts[name] = {'Phone': phone, 'Email': email}
+        messagebox.showinfo("Success", f"Contact '{name}' added.")
+        clear_entries()
+    else:
+        messagebox.showwarning("Input Error", "Name and Phone are required.")
+
+def view_contacts():
+    listbox.delete(0, tk.END)
+    for name in contacts:
+        listbox.insert(tk.END, name)
+
+def show_details(event):
+    selected = listbox.get(tk.ANCHOR)
+    if selected:
+        contact = contacts[selected]
+        entry_name.delete(0, tk.END)
+        entry_name.insert(tk.END, selected)
+        entry_phone.delete(0, tk.END)
+        entry_phone.insert(tk.END, contact['Phone'])
+        entry_email.delete(0, tk.END)
+        entry_email.insert(tk.END, contact['Email'])
+
+def update_contact():
+    name = entry_name.get()
+    if name in contacts:
+        contacts[name] = {'Phone': entry_phone.get(), 'Email': entry_email.get()}
+        messagebox.showinfo("Success", f"Contact '{name}' updated.")
+        view_contacts()
+    else:
+        messagebox.showerror("Error", "Contact not found.")
+
+def delete_contact():
+    name = entry_name.get()
+    if name in contacts:
+        del contacts[name]
+        messagebox.showinfo("Deleted", f"Contact '{name}' deleted.")
+        clear_entries()
+        view_contacts()
+    else:
+        messagebox.showerror("Error", "Contact not found.")
+
+def clear_entries():
+    entry_name.delete(0, tk.END)
+    entry_phone.delete(0, tk.END)
+    entry_email.delete(0, tk.END)
+
+root = tk.Tk()
+root.title("Contact Book")
+
+tk.Label(root, text="Name").grid(row=0, column=0)
+entry_name = tk.Entry(root)
+entry_name.grid(row=0, column=1)
+
+tk.Label(root, text="Phone").grid(row=1, column=0)
+entry_phone = tk.Entry(root)
+entry_phone.grid(row=1, column=1)
+
+tk.Label(root, text="Email").grid(row=2, column=0)
+entry_email = tk.Entry(root)
+entry_email.grid(row=2, column=1)
+
+tk.Button(root, text="Add", command=add_contact).grid(row=3, column=0)
+tk.Button(root, text="Update", command=update_contact).grid(row=3, column=1)
+tk.Button(root, text="Delete", command=delete_contact).grid(row=3, column=2)
+tk.Button(root, text="View", command=view_contacts).grid(row=4, column=0)
+
+listbox = tk.Listbox(root)
+listbox.grid(row=5, column=0, columnspan=3)
+listbox.bind("<<ListboxSelect>>", show_details)
+
+root.mainloop()
